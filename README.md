@@ -38,21 +38,21 @@ This sketch uses an asistant python program called [zmqpubsink.py](./zmqpubsink.
 Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 
 | Key | Notes |
-|    :----:   |          ---: |
-| sample_rate  | Suggest leaving, may need to subsequently tweak the decimation and interpolation values on the graph  |
-| fft_resolution | Suggest leaving works well on Pi4 @ 18% CPU |
-| fft_frame_rate  | Suggest leaving works well on Pi4 @ 18% CPU  |
-| squelch | You will need to increase or decrease this depending on environmental noise |
-| default_tuning_frequency  | This will change automatically as activity happens |
-| start_freq  | Where to start looking for bats |
-| end_freq  | If you need to increase this, you will need to increase the sample rate and then maybe tweak the decimation and interpolation values on the graph |
-| freq_bin_range  | The fft is re-aggregrated based on this size to allow for more detailed but not over the top event generation |
-| trigger_gain_threshold  | Spike in received power required genrate an event |
-| retrigger_seconds | Do not generate more than one event in this comarison against rolling average time period |
-| mqtt_ip_address  | Optional messaging server |
-| mqtt_username  | Optional messaging server |
-| mqtt_password  | Optional messaging server |
-| mqtt_topic  | Optional messaging server |
+|    :----:   |          :--- |
+| sample_rate  | Suggest leaving, may need to subsequently tweak the decimation and interpolation values on the graph. |
+| fft_resolution | Suggest leaving works well on Pi4 @ 18% CPU. |
+| fft_frame_rate  | Ditto. |
+| squelch | You will need to increase or decrease this depending on environmental noise. |
+| default_tuning_frequency  | This will change automatically as activity happens. |
+| start_freq  | Where to start looking for bats. |
+| end_freq  | If you need to increase this, you will need to increase the sample rate and then maybe tweak the decimation and interpolation values on the graph. |
+| freq_bin_range  | The fft is re-aggregrated based on this size to allow for more detailed but not over the top event generation. |
+| trigger_gain_threshold  | Spike in received power required genrate an event. |
+| retrigger_seconds | Do not generate more than one event in this comarison against rolling average time period. |
+| mqtt_ip_address  | Optional messaging server. |
+| mqtt_username  | Ditto. |
+| mqtt_password  | Ditto. |
+| mqtt_topic  | Ditto. |
 
 # Starting and stopping
 
@@ -92,8 +92,6 @@ ffplay -f f32le -ar 24000 -sync ext -fflags nobuffer -nodisp -i udp://127.0.0.1:
 I have to initially connect then disconnect a SDRconnect client after a reboot on the target to allow the gnuradio graph to work. 
 
 Can do this remotely using the excellent [VirtualHere](https://www.virtualhere.com/).
-
-Yet to pin down what is going on here.
 
 Enjoy!
 
