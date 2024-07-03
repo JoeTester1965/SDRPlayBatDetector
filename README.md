@@ -79,7 +79,7 @@ pi@ShedPi:~/Documents/SDRPlayBatDetector $ tail -f SDRPlayBatDetector.csv
 
 # Configuration
 
-Edit the gnuradio sketch source block if you have a different source that the rspdx-r2.
+Edit the gnuradio sketch source block if you have a different source than the rspdx-r2.
 
 For remote audio place you remote IP and port in the [UDP sink](./sketch.png) block and run this at the remote end:
 
