@@ -48,7 +48,7 @@ Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 | end_freq  | If you need to increase this, you will need to increase the sample rate and then maybe tweak the decimation and interpolation values on the graph. |
 | freq_bin_range  | The fft is re-aggregrated based on this size to allow for more detailed but not over the top event generation. |
 | trigger_gain_threshold  | Spike in received power required to generate an event. |
-| retrigger_seconds | Do not generate more than one event in this comarison against rolling average time period. |
+| retrigger_seconds | Do not generate more than one event in this 'comparison against rolling average' interval. |
 | mqtt_ip_address  | Optional messaging server. |
 | mqtt_username  | Ditto. |
 | mqtt_password  | Ditto. |
