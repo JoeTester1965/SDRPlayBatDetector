@@ -40,8 +40,8 @@ Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 | Key | Notes |
 |    :----:   |          ---: |
 | sample_rate  | Suggest leaving, may need to subsequently tweak the decimation and interpolation values on the graph  |
-| fft_resolution | Suggest leaving works well on PI4, 18% CPU |
-| fft_frame_rate  | Suggest leaving works well on PI4, 18% CPU  |
+| fft_resolution | Suggest leaving works well on Pi4 @ 18% CPU |
+| fft_frame_rate  | Suggest leaving works well on Pi4 @ 18% CPU  |
 | squelch | You will need to increase or decrease this depending on environmental noise |
 | default_tuning_frequency  | This will change automatically as activity happens |
 | start_freq  | Where to start looking for bats |
