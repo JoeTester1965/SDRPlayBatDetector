@@ -10,7 +10,7 @@ Tested on Pi Debian Bookwork 64bit 2024-03-15.
 
 I connected [one of these](https://www.ebay.co.uk/itm/115592159244) to [one of those](https://www.sdrplay.com/sdrplay-announces-the-rspdx-r2/) for this.
 
-Some experience will be needed with Linux, GnuRadio and a sensor / SDR receiver pair that works in the range 40 to 120 000 Hz or so.
+Some experience will be needed with Linux, GnuRadio and a sensor / SDR receiver pair that works in the range 40 to 120 kHz or so.
 
 ```console
 sudo apt-get update upgrade
