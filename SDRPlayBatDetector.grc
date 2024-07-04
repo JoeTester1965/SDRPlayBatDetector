@@ -144,7 +144,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 524.0]
+    coordinate: [552, 604.0]
     rotation: 0
     state: enabled
 - name: analog_pwr_squelch_xx_0
@@ -316,7 +316,7 @@ blocks:
     bus_structure: null
     coordinate: [616, 340.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: network_udp_sink_0
   id: network_udp_sink
   parameters:
@@ -450,6 +450,67 @@ blocks:
     coordinate: [832, 420.0]
     rotation: 0
     state: disabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '1'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: fft_resolution
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '-30'
+    int_min: '-100'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [624, 492.0]
+    rotation: 0
+    state: disabled
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:
@@ -580,6 +641,7 @@ connections:
 - [blocks_complex_to_real_0, '0', network_udp_sink_0, '0']
 - [blocks_correctiq_0, '0', blocks_file_sink_0, '0']
 - [blocks_correctiq_0, '0', logpwrfft_x_0, '0']
+- [blocks_correctiq_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [blocks_correctiq_0, '0', virtual_sink_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_throttle_0, '0', logpwrfft_x_0, '0']
