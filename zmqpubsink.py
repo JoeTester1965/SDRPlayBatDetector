@@ -107,6 +107,7 @@ while True:
                         now = datetime.datetime.now()
                         csv_entry="%s,%0.0f\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),event_frequency)
                         csv_file.write(csv_entry)
+                        csv_file.flush()
                         if config.has_section("mqtt"):
                             mqtt_message = "%0.0f" % (event_frequency/1000)
                             mqtt_client.publish(mqtt_topic, mqtt_message)

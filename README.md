@@ -89,9 +89,5 @@ ffplay -f f32le -ar 24000 -sync ext -fflags nobuffer -nodisp -i udp://127.0.0.1:
 
 # Notes
 
-I have to initially connect then disconnect a SDRconnect client after a reboot on the target to allow the gnuradio graph to work. 
-
-Can do this remotely using the excellent [VirtualHere](https://www.virtualhere.com/).
-
 Enjoy!
 

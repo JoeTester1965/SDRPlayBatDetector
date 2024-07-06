@@ -483,8 +483,8 @@ blocks:
     freqhalf: 'True'
     grid: 'False'
     gui_hint: ''
-    int_max: '-30'
-    int_min: '-100'
+    int_max: '-50'
+    int_min: '-110'
     label1: ''
     label10: ''
     label2: ''
@@ -548,7 +548,7 @@ blocks:
     debug_mode: 'False'
     freq_corr: '0'
     hdr_mode: 'False'
-    if_gRdB: '53'
+    if_gRdB: '59'
     iq_balance_mode: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -565,7 +565,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 124.0]
+    coordinate: [80, 132.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_0

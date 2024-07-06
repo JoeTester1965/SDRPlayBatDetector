@@ -83,7 +83,7 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_bandwidth(0)
         self.sdrplay3_rspdxr2_0.set_antenna('Antenna C')
         self.sdrplay3_rspdxr2_0.set_gain_mode(False)
-        self.sdrplay3_rspdxr2_0.set_gain(-(53), 'IF')
+        self.sdrplay3_rspdxr2_0.set_gain(-(59), 'IF')
         self.sdrplay3_rspdxr2_0.set_gain(-(0), 'RF')
         self.sdrplay3_rspdxr2_0.set_freq_corr(0)
         self.sdrplay3_rspdxr2_0.set_dc_offset_mode(False)
