@@ -29,7 +29,7 @@ https://github.com/fventuri/gr-sdrplay3
 
 This sketch uses an asistant python program called [zmqpubsink.py](./zmqpubsink.py) which looks for bat activity as defined by the [config file](SDRPlayBatDetector.ini) and
 
-- Sends out frequency shifted audio of the latest event to the default sound card and/or a remote location.
+- Sends out frequency shifted audio to a remote location.
 - Creates a csv file of events for further analysis and visualisation.
 - Optionally sends events to your messaging server.
 
@@ -40,10 +40,10 @@ Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 | Key | Notes |
 |    :----:   |          :--- |
 | sample_rate  | Suggest leaving, may need to subsequently tweak the decimation and interpolation values on the graph. |
-| fft_resolution | Suggest leaving works well on Pi4 @ 18% CPU. |
+| fft_resolution | Default works well. |
 | fft_frame_rate  | Ditto. |
-| squelch | You will need to increase or decrease this depending on environmental noise. |
-| default_tuning_frequency  | This will change automatically as activity happens. |
+| audio_bandwidth| Ditto. |
+| audio_conversion_gain  | Ditto. |
 | start_freq  | Where to start looking for bats. |
 | end_freq  | If you need to increase this, you will need to increase the sample rate and then maybe tweak the decimation and interpolation values on the graph. |
 | freq_bin_range  | The fft is re-aggregrated based on this size to allow for more detailed but not over the top event generation. |
@@ -84,7 +84,7 @@ Edit the gnuradio sketch source block if you have a different source than the rs
 For remote audio place you remote IP and port in the [UDP sink](./sketch.png) block and run this at the remote end:
 
 ```console
-ffplay -f f32le -ar 24000 -sync ext -fflags nobuffer -nodisp -i udp://127.0.0.1:50243
+ffplay -f f32le -ar 25000 -fflags nobuffer -nodisp -i udp://127.0.0.1:50243 -af "volume=2.0"
 ```
 
 # Notes

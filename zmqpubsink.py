@@ -32,6 +32,7 @@ try:
         config.read_file(f)
         fft_resolution = int(config["graph"]["fft_resolution"])
         fft_frame_rate = int(config["graph"]["fft_frame_rate"])
+        audio_bandwidth = int(config["graph"]["audio_bandwidth"])
         samp_rate = int(config["graph"]["sample_rate"])
         start_freq = int(config["client"]["start_freq"])
         end_freq = int(config["client"]["end_freq"])
@@ -103,7 +104,11 @@ while True:
                         last_trigger_time = time.time()
                         event_frequency = rebinned_frequency_values[index] + (frequency_range_per_fft_bin * bat_data_rebinned_argmax[index])
                         logging.info("Tuning to event at %0.0f Hz", event_frequency)
-                        zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(event_frequency))))))
+                        if event_frequency < audio_bandwidth:
+                            tuning_frequency = 0
+                        else:
+                            tuning_frequency = event_frequency - audio_bandwidth
+                        zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
                         now = datetime.datetime.now()
                         csv_entry="%s,%0.0f\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),event_frequency)
                         csv_file.write(csv_entry)
