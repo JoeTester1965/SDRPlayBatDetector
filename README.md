@@ -67,15 +67,17 @@ bash stop.sh
 
 # Example output
 
-A real-time csv file is created with a timestamp and peak frequency of the bat event. 
+A real-time csv file is created with a timestamp, peak frequency and power value of the bat event.
+
+Look at the message log output for moe detail in zmqpubsink.log
 
 ```console
 pi@ShedPi:~/Documents/SDRPlayBatDetector $ tail -f SDRPlayBatDetector.csv 
-2024-07-01 13:29:59,66465
-2024-07-01 13:30:00,70859
-2024-07-01 13:30:02,69395
-2024-07-01 13:30:03,55488
-2024-07-01 13:30:04,70859
+2024-07-01 13:29:59,66465,-61
+2024-07-01 13:30:00,70859,-65
+2024-07-01 13:30:02,69395,-44
+2024-07-01 13:30:03,55488,-65
+2024-07-01 13:30:04,70859.-53
 ```
 
 # Configuration
