@@ -33,23 +33,6 @@ options:
     state: enabled
 
 blocks:
-- name: audio_bandwidth
-  id: variable_config
-  parameters:
-    comment: ''
-    config_file: ./SDRPlayBatDetector.ini
-    option: audio_bandwidth
-    section: graph
-    type: int
-    value: '12500'
-    writeback: None
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [776, 28.0]
-    rotation: 0
-    state: true
 - name: audio_conversion_gain
   id: variable_config
   parameters:
@@ -64,19 +47,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 28.0]
+    coordinate: [960, 28.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: decimation
-  id: variable
+  id: variable_config
   parameters:
     comment: ''
+    config_file: ./SDRPlayBatDetector.ini
+    option: decimation
+    section: graph
+    type: int
     value: '10'
+    writeback: None
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [376, 468.0]
+    coordinate: [456, 28.0]
     rotation: 0
     state: true
 - name: fft_frame_rate
@@ -93,7 +81,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [616, 28.0]
+    coordinate: [792, 28.0]
     rotation: 0
     state: true
 - name: fft_resolution
@@ -110,7 +98,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 28.0]
+    coordinate: [624, 28.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -243,13 +231,13 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    center_freq: '0'
+    center_freq: samp_rate/4
     comment: ''
     decim: decimation
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    taps: ' firdes.low_pass(1,samp_rate,samp_rate/decimation/4,100)'
+    taps: ' firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100)'
     type: ccc
   states:
     bus_sink: false

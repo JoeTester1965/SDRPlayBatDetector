@@ -52,17 +52,16 @@ class SDRPlayBatDetector(gr.top_block):
         try: fft_frame_rate = self._fft_frame_rate_config.getint('graph', 'fft_frame_rate')
         except: fft_frame_rate = 10
         self.fft_frame_rate = fft_frame_rate
-        self.decimation = decimation = 10
+        self._decimation_config = configparser.ConfigParser()
+        self._decimation_config.read('./SDRPlayBatDetector.ini')
+        try: decimation = self._decimation_config.getint('graph', 'decimation')
+        except: decimation = 10
+        self.decimation = decimation
         self._audio_conversion_gain_config = configparser.ConfigParser()
         self._audio_conversion_gain_config.read('./SDRPlayBatDetector.ini')
         try: audio_conversion_gain = self._audio_conversion_gain_config.getint('graph', 'audio_conversion_gain')
         except: audio_conversion_gain = 256
         self.audio_conversion_gain = audio_conversion_gain
-        self._audio_bandwidth_config = configparser.ConfigParser()
-        self._audio_bandwidth_config.read('./SDRPlayBatDetector.ini')
-        try: audio_bandwidth = self._audio_bandwidth_config.getint('graph', 'audio_bandwidth')
-        except: audio_bandwidth = 12500
-        self.audio_bandwidth = audio_bandwidth
 
         ##################################################
         # Blocks
@@ -104,7 +103,7 @@ class SDRPlayBatDetector(gr.top_block):
             avg_alpha=1.0,
             average=True,
             shift=True)
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/4,100), 0, samp_rate)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100), (samp_rate/4), samp_rate)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_correctiq_0 = blocks.correctiq()
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
@@ -128,7 +127,8 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/4,100))
+        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
+        self.freq_xlating_fir_filter_xxx_0.set_center_freq((self.samp_rate/4))
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
         self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate)
 
@@ -149,7 +149,7 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_decimation(self, decimation):
         self.decimation = decimation
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/4,100))
+        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
 
     def get_audio_conversion_gain(self):
         return self.audio_conversion_gain
@@ -157,12 +157,6 @@ class SDRPlayBatDetector(gr.top_block):
     def set_audio_conversion_gain(self, audio_conversion_gain):
         self.audio_conversion_gain = audio_conversion_gain
         self.blocks_multiply_const_vxx_0.set_k(self.audio_conversion_gain)
-
-    def get_audio_bandwidth(self):
-        return self.audio_bandwidth
-
-    def set_audio_bandwidth(self, audio_bandwidth):
-        self.audio_bandwidth = audio_bandwidth
 
 
 

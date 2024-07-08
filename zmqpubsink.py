@@ -32,12 +32,13 @@ try:
         config.read_file(f)
         fft_resolution = int(config["graph"]["fft_resolution"])
         fft_frame_rate = int(config["graph"]["fft_frame_rate"])
-        audio_bandwidth = int(config["graph"]["audio_bandwidth"])
+        decimation = int(config["graph"]["decimation"])
         samp_rate = int(config["graph"]["sample_rate"])
         start_freq = int(config["client"]["start_freq"])
         end_freq = int(config["client"]["end_freq"])
         freq_bin_range = int(config["client"]["freq_bin_range"])
         trigger_gain_threshold = float(config["client"]["trigger_gain_threshold"])
+        trigger_abs_threshold = float(config["client"]["trigger_abs_threshold"])
         retrigger_seconds = int(config["client"]["retrigger_seconds"])
         if config.has_section("mqtt"):
             mqtt_ip_address = config["mqtt"]["mqtt_ip_address"] 
@@ -103,19 +104,24 @@ while True:
                     if  (time.time() - last_trigger_time) > retrigger_seconds:
                         last_trigger_time = time.time()
                         event_frequency = rebinned_frequency_values[index] + (frequency_range_per_fft_bin * bat_data_rebinned_argmax[index])
-                        logging.info("Tuning to event at %0.0f Hz", event_frequency)
-                        if event_frequency < audio_bandwidth:
+                        if event_frequency < (samp_rate / decimation / 2):
                             tuning_frequency = 0
                         else:
-                            tuning_frequency = event_frequency - audio_bandwidth
-                        zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
-                        now = datetime.datetime.now()
-                        csv_entry="%s,%0.0f\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),event_frequency)
-                        csv_file.write(csv_entry)
-                        csv_file.flush()
-                        if config.has_section("mqtt"):
-                            mqtt_message = "%0.0f" % (event_frequency/1000)
-                            mqtt_client.publish(mqtt_topic, mqtt_message)
+                            tuning_frequency = event_frequency - (samp_rate / decimation / 2)
+                        if bat_data_rebinned_max[index] > trigger_abs_threshold:
+                            logging.info("Detected event at %0.0f Hz : %d > %d + %d and > %d", 
+                                        event_frequency, bat_data_rebinned_max[index], average_power_in_band, trigger_gain_threshold, trigger_abs_threshold)
+                            zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
+                            now = datetime.datetime.now()
+                            csv_entry="%s,%0.0f,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),event_frequency,bat_data_rebinned_max[index])
+                            csv_file.write(csv_entry)
+                            csv_file.flush()
+                            if config.has_section("mqtt"):
+                                mqtt_message = "%0.0f" % (event_frequency/1000)
+                                mqtt_client.publish(mqtt_topic, mqtt_message)
+                        else:
+                            logging.info("Detected non event at %0.0f Hz : %d > %d + %d, but < %d", 
+                                        event_frequency, bat_data_rebinned_max[index], average_power_in_band, trigger_gain_threshold, trigger_abs_threshold)
                 
 
         
