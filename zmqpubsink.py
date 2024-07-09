@@ -83,8 +83,8 @@ zmq_push_message_sink = zmq_push_message_sink_context.socket (zmq.PUSH)
 zmq_push_message_sink.bind (zmq_push_endpoint)
 
 bat_data_rebinned_max_history = [np.array([]) for _ in range(rebinned_fft_size)]
-
-last_trigger_time =  time.time()
+last_trigger_time = []
+last_trigger_time = [time.time() for i in range(rebinned_fft_size)] 
 
 while True:
     if zmq_pub_sink.poll(10) != 0:
@@ -101,8 +101,8 @@ while True:
                 bat_data_rebinned_max_history[index] = np.delete(bat_data_rebinned_max_history[index], 0)
                 average_power_in_band = np.average(bat_data_rebinned_max_history[index])
                 if bat_data_rebinned_max[index] >  average_power_in_band + trigger_gain_threshold:
-                    if  (time.time() - last_trigger_time) > retrigger_seconds:
-                        last_trigger_time = time.time()
+                    if  (time.time() - last_trigger_time[index]) > retrigger_seconds:
+                        last_trigger_time[index] = time.time()
                         event_frequency = rebinned_frequency_values[index] + (frequency_range_per_fft_bin * bat_data_rebinned_argmax[index])
                         if event_frequency < (samp_rate / decimation / 2):
                             tuning_frequency = 0
