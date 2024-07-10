@@ -50,6 +50,7 @@ Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 | trigger_gain_threshold  | Spike in received power required to generate an event. |
 | trigger_abs_threshold  | So not use event if power is less than this |
 | retrigger_seconds | Do not generate more than one event in this 'comparison against rolling average' interval. |
+| bin_count_threshold | Must see activity over this number of bins to be a valid event |
 | mqtt_ip_address  | Optional messaging server. |
 | mqtt_username  | Ditto. |
 | mqtt_password  | Ditto. |
@@ -67,17 +68,17 @@ bash stop.sh
 
 # Example output
 
-A real-time csv file is created with a timestamp, peak frequency and power value of the bat event.
+A real-time csv file is created with a timestamp, peak frequency and power values (for both start end end frequencies) of the bat event.
 
 Look at the message log output for moe detail in zmqpubsink.log
 
 ```console
 pi@ShedPi:~/Documents/SDRPlayBatDetector $ tail -f SDRPlayBatDetector.csv 
-2024-07-01 13:29:59,66465,-61
-2024-07-01 13:30:00,70859,-65
-2024-07-01 13:30:02,69395,-44
-2024-07-01 13:30:03,55488,-65
-2024-07-01 13:30:04,70859.-53
+2024-07-01 13:29:59,66465,-61,86465,-61
+2024-07-01 13:30:00,70859,-65,76465,-74,
+2024-07-01 13:30:02,69395,-44,86465,-76
+2024-07-01 13:30:03,55488,-65,86465,-74
+2024-07-01 13:30:04,70859.-53,96465,-84
 ```
 
 # Configuration

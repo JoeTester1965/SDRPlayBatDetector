@@ -39,6 +39,7 @@ try:
         freq_bin_range = int(config["client"]["freq_bin_range"])
         trigger_gain_threshold = float(config["client"]["trigger_gain_threshold"])
         trigger_abs_threshold = float(config["client"]["trigger_abs_threshold"])
+        bin_count_threshold = int(config["client"]["bin_count_threshold"])
         retrigger_seconds = int(config["client"]["retrigger_seconds"])
         if config.has_section("mqtt"):
             mqtt_ip_address = config["mqtt"]["mqtt_ip_address"] 
@@ -95,6 +96,8 @@ while True:
         bat_data_rebinned = np.split(bat_data, rebinned_fft_size, axis=0) # CAN GET EXCEPTION HERE, FIND OUT WHY! <<<<<<<
         bat_data_rebinned_max = [np.max(subarray) for subarray in bat_data_rebinned]
         bat_data_rebinned_argmax = [np.argmax(subarray) for subarray in bat_data_rebinned]
+        bin_count = 0
+        start_event_frequency = 0
         for index,value in enumerate(bat_data_rebinned_max):
             bat_data_rebinned_max_history[index] = np.append(bat_data_rebinned_max_history[index], bat_data_rebinned_max[index])
             if len(bat_data_rebinned_max_history[index]) == (fft_frame_rate * retrigger_seconds) + 1: 
@@ -104,24 +107,33 @@ while True:
                     if  (time.time() - last_trigger_time[index]) > retrigger_seconds:
                         last_trigger_time[index] = time.time()
                         event_frequency = rebinned_frequency_values[index] + (frequency_range_per_fft_bin * bat_data_rebinned_argmax[index])
+                        if start_event_frequency == 0:
+                            start_event_frequency = event_frequency
+                            start_event_power = bat_data_rebinned_max[index]
                         if event_frequency < (samp_rate / decimation / 2):
                             tuning_frequency = 0
                         else:
                             tuning_frequency = event_frequency - (samp_rate / decimation / 2)
                         if bat_data_rebinned_max[index] > trigger_abs_threshold:
-                            logging.info("Detected event at %0.0f Hz : %d > %d + %d and > %d", 
-                                        event_frequency, bat_data_rebinned_max[index], average_power_in_band, trigger_gain_threshold, trigger_abs_threshold)
-                            zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
-                            now = datetime.datetime.now()
-                            csv_entry="%s,%0.0f,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),event_frequency,bat_data_rebinned_max[index])
-                            csv_file.write(csv_entry)
-                            csv_file.flush()
-                            if config.has_section("mqtt"):
-                                mqtt_message = "%0.0f" % (event_frequency/1000)
-                                mqtt_client.publish(mqtt_topic, mqtt_message)
-                        else:
-                            logging.info("Detected non event at %0.0f Hz : %d > %d + %d, but < %d", 
-                                        event_frequency, bat_data_rebinned_max[index], average_power_in_band, trigger_gain_threshold, trigger_abs_threshold)
-                
+                            bin_count = bin_count + 1
+                            if bin_count >= bin_count_threshold:
+                                logging.info("Detected valid event starting at %0.0f Hz : %d dB and ending at %0.0f Hz : %d dB", 
+                                            start_event_frequency, start_event_power, event_frequency, bat_data_rebinned_max[index])
+                                zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
+                                now = datetime.datetime.now()
+                                csv_entry="%s,%0.0f,%d,%0.0f,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),
+                                                            start_event_frequency, start_event_power, event_frequency,bat_data_rebinned_max[index])
+                                csv_file.write(csv_entry)
+                                csv_file.flush()
+                                if config.has_section("mqtt"):
+                                    mqtt_message = "%0.0f" % (event_frequency/1000)
+                                    mqtt_client.publish(mqtt_topic, mqtt_message)
+                                break
+                            else:
+                                logging.info("Detected possible event at %0.0f Hz : %d > %d + %d, is > %d, bin_count = %d", 
+                                            event_frequency, bat_data_rebinned_max[index], average_power_in_band, 
+                                                trigger_gain_threshold, trigger_abs_threshold, bin_count)
+                                
+                    
 
         
