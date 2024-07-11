@@ -18,8 +18,6 @@ logging.info("Processing %s", csvfile)
 
 event_df = pd.read_csv(csvfile, names=colnames, header=None).dropna()
 
-#event_df = pd.read_csv(csvfile, usecols=[0,6,7,8], names=['timestamp', 'channel', 'signal_dbm', 'ssid'])
-
 event_df['timestamp-utc'] = event_df['timestamp-utc'].apply(lambda x: datetime.datetime.fromtimestamp(x))
 
 title = "Possible events"
