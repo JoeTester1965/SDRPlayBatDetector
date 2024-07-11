@@ -125,7 +125,7 @@ while True:
                 last_trigger_time[index] = time.time()
                 zmq_push_message_sink.send(pmt.serialize_str((pmt.cons(pmt.intern("freq"), pmt.to_pmt(float(tuning_frequency))))))
                 now = datetime.datetime.now()
-                csv_entry="%s,%0.0f,%d,%0.0f,%d,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),
+                csv_entry="%s,%s,%0.0f,%d,%0.0f,%d,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),time.time(),
                                                             start_event_frequency, start_event_power, end_event_frequency, end_event_power, bin_count)
                 csv_file.write(csv_entry)
                 csv_file.flush()

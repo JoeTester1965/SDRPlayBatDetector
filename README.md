@@ -15,6 +15,7 @@ Some experience will be needed with Linux, GnuRadio and a sensor / SDR receiver 
 ```console
 sudo apt-get update upgrade
 sudo apt-get install cmake gnuradio python3-paho-mqtt ffmpeg
+pip3 install -r requirements.txt
 ```
 
 Then follow the instructions here to install required APIs:
@@ -91,6 +92,24 @@ ffplay -f f32le -ar 25000 -fflags nobuffer -nodisp -i udp://127.0.0.1:50243 -af 
 Note that in the line above, 25000 comes from sample_rate/decimation in the ini file.
 
 # Notes
+
+To visualise output a venv is required so not to mess up the dependancy sensitive GnuRadio. To set this up:
+
+```console 
+python -m venv venv
+source venv/bin/activate
+pip3 install plotnine
+exit
+```
+
+Then to subsequently use (this will start then exit required environment):
+
+```console
+bash ./visualise.sh
+```
+An image has been placed in **events.jpg** 
+
+*** Example IMAGE TBD **
 
 Enjoy!
 

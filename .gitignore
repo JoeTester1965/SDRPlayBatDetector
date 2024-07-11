@@ -4,3 +4,5 @@ SDRPlayBatDetector.csv
 nohup.out
 bat-recording
 .vscode/launch.json
+venv
+events.jpg
