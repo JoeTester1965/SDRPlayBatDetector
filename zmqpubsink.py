@@ -93,7 +93,7 @@ while True:
         message_size = len(msg)
         data = np.frombuffer(msg, dtype=np.float32, count=fft_resolution)
         bat_data = data[start_bin:end_bin]
-        bat_data_rebinned = np.split(bat_data, rebinned_fft_size, axis=0) # CAN GET EXCEPTION HERE, FIND OUT WHY! <<<<<<<
+        bat_data_rebinned = np.split(bat_data, rebinned_fft_size, axis=0)
         bat_data_rebinned_max = [np.max(subarray) for subarray in bat_data_rebinned]
         bat_data_rebinned_argmax = [np.argmax(subarray) for subarray in bat_data_rebinned]
         bin_count = 0
