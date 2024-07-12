@@ -69,15 +69,19 @@ bash stop.sh
 
 # Example output
 
-A real-time csv file is created with a timestamp, peak frequency and power values (for both start end end frequencies bins) and the actual number of bins that casued the bat event.
+A real-time csv file is created with event information:
+
+***timestamp,timestamp-utc,start_freq,start_power,end_freq,end_power,number_of_bins_threshold_exceeded***
+
 
 ```console
 pi@ShedPi:~/Documents/SDRPlayBatDetector $ tail -f SDRPlayBatDetector.csv 
-2024-07-01 13:29:59,66465,-61,86465,-61,4
-2024-07-01 13:30:00,70859,-65,76465,-74,3
-2024-07-01 13:30:02,69395,-44,86465,-76,2
-2024-07-01 13:30:03,55488,-65,86465,-74,4
-2024-07-01 13:30:04,70859.-53,96465,-84,2
+2024-07-11 21:30:23,1720729823.81406,51592,-60,55732,-68,2
+2024-07-11 21:30:28,1720729828.13749,55010,-60,75000,-73,4
+2024-07-11 21:30:37,1720729837.46326,51836,-53,55000,-62,2
+2024-07-11 21:32:28,1720729948.55296,53301,-51,97441,-74,4
+2024-07-11 21:32:31,1720729951.10158,60615,-64,75977,-65,3
+2024-07-11 21:32:38,1720729958.09749,51348,-41,95732,-68,6
 ```
 
 # Configuration
@@ -109,7 +113,7 @@ bash ./visualise.sh
 ```
 An image has been placed in **events.jpg** 
 
-*** Example IMAGE TBD **
+![events.jpg](./example-events.jpg)
 
 Enjoy!
 
