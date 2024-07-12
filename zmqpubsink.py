@@ -131,8 +131,7 @@ while True:
                 csv_file.flush()
                 logging.info(csv_entry)
                 if config.has_section("mqtt"):
-                    mqtt_message = "%0.0f" % (event_frequency/1000)
-                    mqtt_client.publish(mqtt_topic, mqtt_message)
+                    mqtt_client.publish(mqtt_topic, csv_entry)
                                 
                     
 
