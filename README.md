@@ -111,9 +111,11 @@ Then to subsequently use (this will start then exit required environment):
 ```console
 bash ./visualise.sh
 ```
-An image has been placed in **events.jpg** 
+Images will then be created in the files [events-by-timeofday.jpg](./example-events-by-timeofday.jpg) and [events-by-frequency.jpg](./example-events-by-frequency.jpg) visualising events both by time of day and frequency
 
-![events.jpg](./example-events.jpg)
+![events-by-timeofday.jpg](./example-events-by-timeofday.jpg)
+
+![events-by-frequency.jpg](./example-events-by-frequency.jpg)
 
 Enjoy!
 

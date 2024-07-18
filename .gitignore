@@ -5,4 +5,5 @@ nohup.out
 bat-recording
 .vscode/launch.json
 venv
-events.jpg
+events-by-frequency.jpg
+events-by-timeofday.jpg
