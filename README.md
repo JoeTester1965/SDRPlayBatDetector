@@ -106,13 +106,11 @@ pip3 install plotnine
 exit
 ```
 
-Then to subsequently use (this will start then exit required environment):
+Then to subsequently use and create [events-by-timeofday.jpg](./example-events-by-timeofday.jpg) and [events-by-frequency.jpg](./example-events-by-frequency.jpg):
 
 ```console
 bash ./visualise.sh
 ```
-Images will then be created in the files [events-by-timeofday.jpg](./example-events-by-timeofday.jpg) and [events-by-frequency.jpg](./example-events-by-frequency.jpg) visualising events both by time of day and frequency
-
 ![events-by-timeofday.jpg](./example-events-by-timeofday.jpg)
 
 ![events-by-frequency.jpg](./example-events-by-frequency.jpg)
