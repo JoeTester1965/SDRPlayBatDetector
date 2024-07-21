@@ -11,4 +11,15 @@ fi
 
 python3 ./csv_viewer.py
 
+if [[ -z $1 ]]
+then
+	dir=./output/$(date +%d-%m-%Y-%H-%M)
+else
+	dir=$1/$(date +%d-%m-%Y-%H-%M)
+fi
+
+mkdir -p $dir
+
+cp -f events-by-frequency.jpg events-by-timeofday.jpg $dir
+
 exit
