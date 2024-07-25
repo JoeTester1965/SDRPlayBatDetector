@@ -30,9 +30,9 @@ event_df_expanded = pd.concat([event_df_expanded_1, event_df_expanded_2])
 
 graph = ggplot(event_df_expanded, 
         aes(y = 'timestamp-utc', x = 'freq')) + geom_point(aes(size='power') , alpha=0.05) + \
-        ylab("Hour") + theme(axis_text_x=element_text(rotation=90, size=6)) + \
+        ylab("Day") + labs(x = "Frequency") + theme(axis_text_x=element_text(rotation=90, size=6)) + \
         scale_x_continuous(breaks = [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000,110000,120000,130000,140000,150000]) + \
-        scale_y_datetime(date_breaks = "3 hours", labels = date_format("%H")) + \
+        scale_y_datetime(date_breaks = "1 day", labels = date_format("%d/%m/%Y")) + \
         theme(axis_text_y=element_text(size=6)) + theme(figure_size=(16, 8)) + \
         ggtitle(title)
 
