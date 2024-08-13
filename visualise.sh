@@ -18,8 +18,7 @@ else
 	dir=$1/$(date +%d-%m-%Y-%H-%M)
 fi
 
-mkdir -p $dir
-
-cp -f events-by-frequency.jpg events-by-timeofday.jpg $dir
+cp -f events-by-frequency.jpg $dir-events-by-frequency.jpg
+cp -f events-by-timeofday.jpg $dir-events-by-timeofday.jpg
 
 exit
