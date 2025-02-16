@@ -28,6 +28,10 @@ event_df_expanded_2 = event_df[['timestamp-utc','end_freq','end_power']]
 event_df_expanded_2.rename(columns={"end_freq": "freq", "end_power": "power"}, inplace=True)
 event_df_expanded = pd.concat([event_df_expanded_1, event_df_expanded_2])
 
+event_df_expanded['publishedAt'] = pd.to_datetime(event_df_expanded['timestamp-utc'])
+event_df_expanded = event_df_expanded.set_index(['publishedAt'])
+event_df_expanded = event_df_expanded.last('24h')
+
 graph = ggplot(event_df_expanded, 
         aes(y = 'timestamp-utc', x = 'freq')) + geom_point(aes(size='power') , alpha=0.05) + \
         ylab("Day") + labs(x = "Frequency") + theme(axis_text_x=element_text(rotation=90, size=6)) + \
