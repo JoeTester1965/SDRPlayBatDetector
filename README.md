@@ -13,9 +13,9 @@ I connected [one of these](https://www.ebay.co.uk/itm/115592159244) to [one of t
 Some experience will be needed with Linux, GnuRadio and a sensor / SDR receiver pair that works in the range 40 to 120 kHz or so.
 
 ```console
-sudo apt-get update upgrade
+sudo apt-get update 
+sudo apt-get upgrade
 sudo apt-get install cmake gnuradio python3-paho-mqtt ffmpeg
-pip3 install -r requirements.txt
 ```
 
 Then follow the instructions here to install required APIs:
