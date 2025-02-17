@@ -8,3 +8,4 @@ venv
 events-by-frequency.jpg
 events-by-timeofday.jpg
 output
+SDRPlayBatDetector.csv.archive
