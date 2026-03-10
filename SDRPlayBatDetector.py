@@ -76,13 +76,13 @@ class SDRPlayBatDetector(gr.top_block):
                 channels_size=1
             ),
         )
-        self.sdrplay3_rspdxr2_0.set_sample_rate(samp_rate)
-        self.sdrplay3_rspdxr2_0.set_center_freq(0)
+        self.sdrplay3_rspdxr2_0.set_sample_rate(samp_rate, False)
+        self.sdrplay3_rspdxr2_0.set_center_freq(0, False)
         self.sdrplay3_rspdxr2_0.set_bandwidth(0)
         self.sdrplay3_rspdxr2_0.set_antenna('Antenna B')
         self.sdrplay3_rspdxr2_0.set_gain_mode(False)
-        self.sdrplay3_rspdxr2_0.set_gain(-(59), 'IF')
-        self.sdrplay3_rspdxr2_0.set_gain(-(0), 'RF')
+        self.sdrplay3_rspdxr2_0.set_gain(-(59), 'IF', False)
+        self.sdrplay3_rspdxr2_0.set_gain(-(0), 'RF', False)
         self.sdrplay3_rspdxr2_0.set_freq_corr(0)
         self.sdrplay3_rspdxr2_0.set_dc_offset_mode(True)
         self.sdrplay3_rspdxr2_0.set_iq_balance_mode(True)
@@ -130,7 +130,7 @@ class SDRPlayBatDetector(gr.top_block):
         self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
         self.freq_xlating_fir_filter_xxx_0.set_center_freq((self.samp_rate/4))
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
-        self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate)
+        self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate, False)
 
     def get_fft_resolution(self):
         return self.fft_resolution

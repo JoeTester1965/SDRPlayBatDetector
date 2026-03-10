@@ -9,7 +9,7 @@ else
     echo "No local python virtual env at $VIRTUAL_ENV is being used "
 fi
 
-python3 ./csv_viewer.py
+python3 ./csv_viewer.py 0.25
 
 if [[ -z $1 ]]
 then
