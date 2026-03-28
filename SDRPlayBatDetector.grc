@@ -360,7 +360,7 @@ blocks:
     minoutbuf: '0'
     name: '""'
     nconnections: '1'
-    ref_level: '-80'
+    ref_level: '-90'
     showports: 'False'
     update_time: '0.10'
     vlen: fft_resolution
@@ -422,7 +422,7 @@ blocks:
     freqhalf: 'True'
     grid: 'False'
     gui_hint: ''
-    int_max: '-60'
+    int_max: '-30'
     int_min: '-110'
     label1: ''
     label10: ''
@@ -455,7 +455,7 @@ blocks:
   parameters:
     AGC: 'False'
     affinity: ''
-    agc_set_point: '-30'
+    agc_set_point: '0'
     alias: ''
     antenna: Antenna B
     bandwidth: '0'
@@ -480,6 +480,9 @@ blocks:
     sample_rate: samp_rate
     sample_sequence_gaps_check: 'False'
     show_gain_changes: 'False'
+    showports: 'False'
+    stream_tags: 'False'
+    synchronous_updates: 'False'
   states:
     bus_sink: false
     bus_source: false

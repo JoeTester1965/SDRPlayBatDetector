@@ -47,10 +47,10 @@ event_df_expanded = event_df_expanded.loc[event_df_expanded.index > start]
 
 graph = ggplot(event_df_expanded, 
         aes(y = 'timestamp-utc', x = 'freq')) + geom_point(aes(size='power') , alpha=alpha) + \
-        ylab("Hour") + labs(x = "Frequency") + theme(axis_text_x=element_text(rotation=90, size=6)) + \
+        ylab("Hour") + labs(x = "Frequency") + theme(axis_text_x=element_text(rotation=90, size=10)) + \
         scale_x_continuous(breaks = [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000,110000,120000,130000,140000,150000]) + \
         scale_y_datetime(date_breaks = "1 hour", labels = date_format("%H")) + \
-        theme(axis_text_y=element_text(size=6)) + theme(figure_size=(16, 8)) + \
+        theme(axis_text_y=element_text(size=10)) + theme(figure_size=(16, 8)) + \
         ggtitle(title)
 
 plot_filename = os.getcwd() + '/events-by-frequency.jpg'
@@ -64,11 +64,11 @@ event_df['timestamp-utc-copy'] = event_df['timestamp-utc-copy'].apply(lambda dt:
 event_df['timestamp-utc'] = event_df['timestamp-utc'].apply(lambda dt: dt.replace(day=1,month=1,year=2000))
 
 graph = ggplot(event_df, aes(y = 'timestamp-utc', x = 'timestamp-utc-copy')) + geom_point(aes(size='start_power'), alpha=alpha) + \
-        ylab("Hour") + theme(axis_text_x=element_text(rotation=90, size=6)) + \
-        xlab("Month") + theme(axis_text_x=element_text(size=6)) + \
+        ylab("Hour") + theme(axis_text_x=element_text(rotation=90, size=10)) + \
+        xlab("Day and month") + theme(axis_text_x=element_text(size=10)) + \
         scale_y_datetime(date_breaks = "1 hour", labels = date_format("%H")) + \
-        scale_x_datetime(date_breaks = "1 month", labels = date_format("%m/%Y")) + \
-        theme(axis_text_y=element_text(size=6)) + theme(figure_size=(16, 8)) + \
+        scale_x_datetime(date_breaks = "1 day", labels = date_format("%d/%m")) + \
+        theme(axis_text_y=element_text(size=10)) + theme(figure_size=(16, 8)) + \
         ggtitle(title)
 
 plot_filename = os.getcwd() + '/events-by-timeofday.jpg'
