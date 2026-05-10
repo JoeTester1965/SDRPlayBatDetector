@@ -8,23 +8,22 @@
 # Title: SDRPlayBatDetector-grc
 # Author: JoeTester1965
 # Copyright: MIT License
-# GNU Radio version: 3.10.5.1
+# GNU Radio version: 3.10.12.0
 
 from gnuradio import blocks
-from gnuradio import filter
-from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.filter import firdes
 from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import network
 from gnuradio import sdrplay3
 from gnuradio import zeromq
 from gnuradio.fft import logpwrfft
 import configparser
+import threading
 
 
 
@@ -33,6 +32,7 @@ class SDRPlayBatDetector(gr.top_block):
 
     def __init__(self):
         gr.top_block.__init__(self, "SDRPlayBatDetector-grc", catch_exceptions=True)
+        self.flowgraph_started = threading.Event()
 
         ##################################################
         # Variables
@@ -68,7 +68,7 @@ class SDRPlayBatDetector(gr.top_block):
         ##################################################
 
         self.zeromq_pull_msg_source_0 = zeromq.pull_msg_source('tcp://127.0.0.1:50241', 100, False)
-        self.zeromq_pub_sink_0 = zeromq.pub_sink(gr.sizeof_float, fft_resolution, 'tcp://127.0.0.1:50242', 100, False, (-1), '', True)
+        self.zeromq_pub_sink_0 = zeromq.pub_sink(gr.sizeof_float, fft_resolution, 'tcp://127.0.0.1:50242', 100, False, (-1), '', True, True)
         self.sdrplay3_rspdxr2_0 = sdrplay3.rspdxr2(
             '',
             stream_args=sdrplay3.stream_args(
@@ -82,7 +82,7 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_antenna('Antenna B')
         self.sdrplay3_rspdxr2_0.set_gain_mode(False)
         self.sdrplay3_rspdxr2_0.set_gain(-(59), 'IF', False)
-        self.sdrplay3_rspdxr2_0.set_gain(-(0), 'RF', False)
+        self.sdrplay3_rspdxr2_0.set_gain(-(27), 'RF', False)
         self.sdrplay3_rspdxr2_0.set_freq_corr(0)
         self.sdrplay3_rspdxr2_0.set_dc_offset_mode(True)
         self.sdrplay3_rspdxr2_0.set_iq_balance_mode(True)
@@ -95,7 +95,6 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_debug_mode(False)
         self.sdrplay3_rspdxr2_0.set_sample_sequence_gaps_check(False)
         self.sdrplay3_rspdxr2_0.set_show_gain_changes(False)
-        self.network_udp_sink_0 = network.udp_sink(gr.sizeof_float, 1, '192.168.1.77', 50243, 0, 1472, False)
         self.logpwrfft_x_0 = logpwrfft.logpwrfft_c(
             sample_rate=samp_rate,
             fft_size=fft_resolution,
@@ -104,21 +103,13 @@ class SDRPlayBatDetector(gr.top_block):
             avg_alpha=1.0,
             average=True,
             shift=True)
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100), (samp_rate/4), samp_rate)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_correctiq_0 = blocks.correctiq()
-        self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.zeromq_pull_msg_source_0, 'out'), (self.freq_xlating_fir_filter_xxx_0, 'freq'))
-        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.blocks_correctiq_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_correctiq_0, 0), (self.logpwrfft_x_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.network_udp_sink_0, 0))
-        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.blocks_complex_to_real_0, 0))
         self.connect((self.logpwrfft_x_0, 0), (self.zeromq_pub_sink_0, 0))
         self.connect((self.sdrplay3_rspdxr2_0, 0), (self.blocks_correctiq_0, 0))
 
@@ -128,8 +119,6 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
-        self.freq_xlating_fir_filter_xxx_0.set_center_freq((self.samp_rate/4))
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
         self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate, False)
 
@@ -150,14 +139,12 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_decimation(self, decimation):
         self.decimation = decimation
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
 
     def get_audio_conversion_gain(self):
         return self.audio_conversion_gain
 
     def set_audio_conversion_gain(self, audio_conversion_gain):
         self.audio_conversion_gain = audio_conversion_gain
-        self.blocks_multiply_const_vxx_0.set_k(self.audio_conversion_gain)
 
 
 
@@ -175,6 +162,7 @@ def main(top_block_cls=SDRPlayBatDetector, options=None):
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+    tb.flowgraph_started.set()
 
     tb.wait()
 
