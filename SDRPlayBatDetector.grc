@@ -339,7 +339,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    taps: ' firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100)'
+    taps: ' firdes.low_pass(1,samp_rate,samp_rate/decimation,100)'
     type: ccc
   states:
     bus_sink: false
@@ -565,9 +565,9 @@ blocks:
 - name: sdrplay3_rspdxr2_0
   id: sdrplay3_rspdxr2
   parameters:
-    AGC: 'False'
+    AGC: 'True'
     affinity: ''
-    agc_set_point: '0'
+    agc_set_point: '-25'
     alias: ''
     antenna: Antenna B
     bandwidth: '0'

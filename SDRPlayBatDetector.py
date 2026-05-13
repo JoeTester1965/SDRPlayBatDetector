@@ -102,13 +102,13 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_center_freq(0, False)
         self.sdrplay3_rspdxr2_0.set_bandwidth(0)
         self.sdrplay3_rspdxr2_0.set_antenna('Antenna B')
-        self.sdrplay3_rspdxr2_0.set_gain_mode(False)
+        self.sdrplay3_rspdxr2_0.set_gain_mode(True)
         self.sdrplay3_rspdxr2_0.set_gain(-(36), 'IF', False)
         self.sdrplay3_rspdxr2_0.set_gain(0, 'LNAstate', False)
         self.sdrplay3_rspdxr2_0.set_freq_corr(0)
         self.sdrplay3_rspdxr2_0.set_dc_offset_mode(True)
         self.sdrplay3_rspdxr2_0.set_iq_balance_mode(True)
-        self.sdrplay3_rspdxr2_0.set_agc_setpoint(0)
+        self.sdrplay3_rspdxr2_0.set_agc_setpoint((-25))
         self.sdrplay3_rspdxr2_0.set_hdr_mode(False)
         self.sdrplay3_rspdxr2_0.set_rf_notch_filter(False)
         self.sdrplay3_rspdxr2_0.set_dab_notch_filter(False)
@@ -147,7 +147,7 @@ class SDRPlayBatDetector(gr.top_block):
             average=True,
             shift=True)
         self.logpwrfft_x_0.set_block_alias("audio")
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100), bat_tuning_frequency, samp_rate)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation,100), bat_tuning_frequency, samp_rate)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_correctiq_0 = blocks.correctiq()
@@ -179,7 +179,7 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
+        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation,100))
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 7000, 1000, window.WIN_HAMMING, 6.76))
         self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate, False)
@@ -201,7 +201,7 @@ class SDRPlayBatDetector(gr.top_block):
 
     def set_decimation(self, decimation):
         self.decimation = decimation
-        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
+        self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation,100))
 
     def get_bat_tuning_frequency(self):
         return self.bat_tuning_frequency
