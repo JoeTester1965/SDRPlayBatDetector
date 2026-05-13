@@ -45,12 +45,16 @@ Edit the [config file](SDRPlayBatDetector.ini) to adjust the following
 | fft_resolution | Ditto. |
 | fft_frame_rate  | Ditto. |
 | audio_conversion_gain  | Ditto. |
+| bat_tuning_frequency | Where to losten for bat sounds
 | start_freq  | Where to start looking for bats. |
 | end_freq  | If you need to increase this, you will need to increase the sample rate and then maybe tweak the decimation and interpolation values on the graph. |
 | freq_bin_range  | The fft is re-aggregrated based on this size to allow for more detailed but not over the top event generation. |
 | trigger_gain_threshold  | Spike in received power required to generate an event. |
 | trigger_abs_threshold  | So not use event if power is less than this |
 | retrigger_seconds | Do not generate more than one event in this 'comparison against rolling average' interval. |
+| audio_ip_address | IP address to send audio streams |
+| audio_speech_port | Port to send speech audio stream|
+| audio_bat_port | Port to send bat audio stream |
 | bin_count_threshold | Must see activity over this number of bins to be a valid event |
 | mqtt_ip_address  | Optional messaging server. |
 | mqtt_username  | Ditto. |
@@ -91,7 +95,7 @@ Edit the gnuradio sketch source block if you have a different source than the rs
 For remote audio place you remote IP and port in the [UDP sink](./sketch.png) block and run this at the remote end:
 
 ```console
-ffplay -f f32le -ar 25000 -fflags nobuffer -nodisp -i udp://127.0.0.1:50243 -af "volume=2.0"
+ffplay -f f32le -ar 16000 -fflags nobuffer -nodisp -i udp://127.0.0.1:50243
 ```
 Note that in the line above, 25000 comes from sample_rate/decimation in the ini file.
 

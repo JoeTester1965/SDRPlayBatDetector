@@ -39,7 +39,6 @@ class SDRPlayBatDetector(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.tuning_frequency = tuning_frequency = 0
         self._samp_rate_config = configparser.ConfigParser()
         self._samp_rate_config.read('./SDRPlayBatDetector.ini')
         try: samp_rate = self._samp_rate_config.getint('graph', 'samp_rate')
@@ -60,11 +59,31 @@ class SDRPlayBatDetector(gr.top_block):
         try: decimation = self._decimation_config.getint('graph', 'decimation')
         except: decimation = 10
         self.decimation = decimation
+        self._bat_tuning_frequency_config = configparser.ConfigParser()
+        self._bat_tuning_frequency_config.read('./SDRPlayBatDetector.ini')
+        try: bat_tuning_frequency = self._bat_tuning_frequency_config.getint('graph', 'bat_tuning_frequency')
+        except: bat_tuning_frequency = 60000
+        self.bat_tuning_frequency = bat_tuning_frequency
+        self._audio_speech_port_config = configparser.ConfigParser()
+        self._audio_speech_port_config.read('./SDRPlayBatDetector.ini')
+        try: audio_speech_port = self._audio_speech_port_config.getint('client', 'audio_speech_port')
+        except: audio_speech_port = 50244
+        self.audio_speech_port = audio_speech_port
+        self._audio_ip_address_config = configparser.ConfigParser()
+        self._audio_ip_address_config.read('./SDRPlayBatDetector.ini')
+        try: audio_ip_address = self._audio_ip_address_config.get('client', audio_ip_address)
+        except: audio_ip_address = '127.0.0.1'
+        self.audio_ip_address = audio_ip_address
         self._audio_conversion_gain_config = configparser.ConfigParser()
         self._audio_conversion_gain_config.read('./SDRPlayBatDetector.ini')
         try: audio_conversion_gain = self._audio_conversion_gain_config.getint('graph', 'audio_conversion_gain')
         except: audio_conversion_gain = 2
         self.audio_conversion_gain = audio_conversion_gain
+        self._audio_bat_port_config = configparser.ConfigParser()
+        self._audio_bat_port_config.read('./SDRPlayBatDetector.ini')
+        try: audio_bat_port = self._audio_bat_port_config.getint('client', 'audio_bat_port')
+        except: audio_bat_port = 50243
+        self.audio_bat_port = audio_bat_port
 
         ##################################################
         # Blocks
@@ -84,7 +103,7 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_bandwidth(0)
         self.sdrplay3_rspdxr2_0.set_antenna('Antenna B')
         self.sdrplay3_rspdxr2_0.set_gain_mode(False)
-        self.sdrplay3_rspdxr2_0.set_gain(-(30), 'IF', False)
+        self.sdrplay3_rspdxr2_0.set_gain(-(36), 'IF', False)
         self.sdrplay3_rspdxr2_0.set_gain(0, 'LNAstate', False)
         self.sdrplay3_rspdxr2_0.set_freq_corr(0)
         self.sdrplay3_rspdxr2_0.set_dc_offset_mode(True)
@@ -98,7 +117,27 @@ class SDRPlayBatDetector(gr.top_block):
         self.sdrplay3_rspdxr2_0.set_debug_mode(False)
         self.sdrplay3_rspdxr2_0.set_sample_sequence_gaps_check(False)
         self.sdrplay3_rspdxr2_0.set_show_gain_changes(False)
-        self.network_udp_sink_0 = network.udp_sink(gr.sizeof_float, 1, '127.0.0.1', 50243, 0, 1472, False)
+        self.rational_resampler_xxx_0_0 = filter.rational_resampler_ccc(
+                interpolation=16,
+                decimation=25,
+                taps=[],
+                fractional_bw=0)
+        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
+                interpolation=16,
+                decimation=25,
+                taps=[],
+                fractional_bw=0)
+        self.network_udp_sink_0_0 = network.udp_sink(gr.sizeof_float, 1, audio_ip_address, audio_speech_port, 0, 1472, False)
+        self.network_udp_sink_0 = network.udp_sink(gr.sizeof_float, 1, audio_ip_address, 50243, 0, 1472, False)
+        self.low_pass_filter_0 = filter.fir_filter_ccf(
+            10,
+            firdes.low_pass(
+                1,
+                samp_rate,
+                7000,
+                1000,
+                window.WIN_HAMMING,
+                6.76))
         self.logpwrfft_x_0 = logpwrfft.logpwrfft_c(
             sample_rate=samp_rate,
             fft_size=fft_resolution,
@@ -108,9 +147,11 @@ class SDRPlayBatDetector(gr.top_block):
             average=True,
             shift=True)
         self.logpwrfft_x_0.set_block_alias("audio")
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100), tuning_frequency, samp_rate)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decimation,  firdes.low_pass(1,samp_rate,samp_rate/decimation/3,100), bat_tuning_frequency, samp_rate)
+        self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_conversion_gain)
         self.blocks_correctiq_0 = blocks.correctiq()
+        self.blocks_complex_to_real_0_0 = blocks.complex_to_real(1)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
 
 
@@ -119,20 +160,19 @@ class SDRPlayBatDetector(gr.top_block):
         ##################################################
         self.msg_connect((self.zeromq_pull_msg_source_0, 'out'), (self.freq_xlating_fir_filter_xxx_0, 'freq'))
         self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.blocks_complex_to_real_0_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
         self.connect((self.blocks_correctiq_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_correctiq_0, 0), (self.logpwrfft_x_0, 0))
+        self.connect((self.blocks_correctiq_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.network_udp_sink_0, 0))
-        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.blocks_complex_to_real_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.network_udp_sink_0_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.rational_resampler_xxx_0_0, 0))
         self.connect((self.logpwrfft_x_0, 0), (self.zeromq_pub_sink_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_complex_to_real_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0_0, 0), (self.blocks_complex_to_real_0, 0))
         self.connect((self.sdrplay3_rspdxr2_0, 0), (self.blocks_correctiq_0, 0))
 
-
-    def get_tuning_frequency(self):
-        return self.tuning_frequency
-
-    def set_tuning_frequency(self, tuning_frequency):
-        self.tuning_frequency = tuning_frequency
-        self.freq_xlating_fir_filter_xxx_0.set_center_freq(self.tuning_frequency)
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -141,6 +181,7 @@ class SDRPlayBatDetector(gr.top_block):
         self.samp_rate = samp_rate
         self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 7000, 1000, window.WIN_HAMMING, 6.76))
         self.sdrplay3_rspdxr2_0.set_sample_rate(self.samp_rate, False)
 
     def get_fft_resolution(self):
@@ -162,12 +203,44 @@ class SDRPlayBatDetector(gr.top_block):
         self.decimation = decimation
         self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/self.decimation/3,100))
 
+    def get_bat_tuning_frequency(self):
+        return self.bat_tuning_frequency
+
+    def set_bat_tuning_frequency(self, bat_tuning_frequency):
+        self.bat_tuning_frequency = bat_tuning_frequency
+        self.freq_xlating_fir_filter_xxx_0.set_center_freq(self.bat_tuning_frequency)
+
+    def get_audio_speech_port(self):
+        return self.audio_speech_port
+
+    def set_audio_speech_port(self, audio_speech_port):
+        self.audio_speech_port = audio_speech_port
+
+    def get_audio_ip_address(self):
+        return self.audio_ip_address
+
+    def set_audio_ip_address(self, audio_ip_address):
+        self.audio_ip_address = audio_ip_address
+        self._audio_ip_address_config = configparser.ConfigParser()
+        self._audio_ip_address_config.read('./SDRPlayBatDetector.ini')
+        if not self._audio_ip_address_config.has_section('client'):
+        	self._audio_ip_address_config.add_section('client')
+        self._audio_ip_address_config.set('client', self.audio_ip_address, str(None))
+        self._audio_ip_address_config.write(open('./SDRPlayBatDetector.ini', 'w'))
+
     def get_audio_conversion_gain(self):
         return self.audio_conversion_gain
 
     def set_audio_conversion_gain(self, audio_conversion_gain):
         self.audio_conversion_gain = audio_conversion_gain
         self.blocks_multiply_const_vxx_0.set_k(self.audio_conversion_gain)
+        self.blocks_multiply_const_vxx_0_0.set_k(self.audio_conversion_gain)
+
+    def get_audio_bat_port(self):
+        return self.audio_bat_port
+
+    def set_audio_bat_port(self, audio_bat_port):
+        self.audio_bat_port = audio_bat_port
 
 
 

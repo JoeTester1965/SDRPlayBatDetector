@@ -33,6 +33,23 @@ options:
     state: enabled
 
 blocks:
+- name: audio_bat_port
+  id: variable_config
+  parameters:
+    comment: ''
+    config_file: ./SDRPlayBatDetector.ini
+    option: audio_bat_port
+    section: client
+    type: int
+    value: '50243'
+    writeback: None
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 468.0]
+    rotation: 0
+    state: true
 - name: audio_conversion_gain
   id: variable_config
   parameters:
@@ -50,6 +67,57 @@ blocks:
     coordinate: [960, 28.0]
     rotation: 0
     state: enabled
+- name: audio_ip_address
+  id: variable_config
+  parameters:
+    comment: ''
+    config_file: ./SDRPlayBatDetector.ini
+    option: audio_ip_address
+    section: client
+    type: string
+    value: 127.0.0.1
+    writeback: None
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 180.0]
+    rotation: 0
+    state: true
+- name: audio_speech_port
+  id: variable_config
+  parameters:
+    comment: ''
+    config_file: ./SDRPlayBatDetector.ini
+    option: audio_speech_port
+    section: client
+    type: int
+    value: '50244'
+    writeback: None
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 324.0]
+    rotation: 0
+    state: true
+- name: bat_tuning_frequency
+  id: variable_config
+  parameters:
+    comment: ''
+    config_file: ./SDRPlayBatDetector.ini
+    option: bat_tuning_frequency
+    section: graph
+    type: int
+    value: '60000'
+    writeback: None
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 28.0]
+    rotation: 0
+    state: true
 - name: decimation
   id: variable_config
   parameters:
@@ -118,18 +186,6 @@ blocks:
     coordinate: [288, 28.0]
     rotation: 0
     state: true
-- name: tuning_frequency
-  id: variable
-  parameters:
-    comment: ''
-    value: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [200, 636.0]
-    rotation: 0
-    state: enabled
 - name: blocks_complex_to_real_0
   id: blocks_complex_to_real
   parameters:
@@ -143,7 +199,23 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 688.0]
+    coordinate: [680, 712.0]
+    rotation: 0
+    state: enabled
+- name: blocks_complex_to_real_0_0
+  id: blocks_complex_to_real
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 816.0]
     rotation: 0
     state: enabled
 - name: blocks_correctiq_0
@@ -176,7 +248,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 204.0]
+    coordinate: [616, 180.0]
     rotation: 0
     state: disabled
 - name: blocks_file_source_0
@@ -216,7 +288,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [768, 684.0]
+    coordinate: [680, 676.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: audio_conversion_gain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 780.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0
@@ -243,7 +333,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    center_freq: tuning_frequency
+    center_freq: bat_tuning_frequency
     comment: ''
     decim: decimation
     maxoutbuf: '0'
@@ -278,13 +368,37 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 340.0]
+    coordinate: [616, 308.0]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '7000'
+    decim: '10'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fir_filter_ccf
+    width: '1000'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 700.0]
     rotation: 0
     state: enabled
 - name: network_udp_sink_0
   id: network_udp_sink
   parameters:
-    addr: 127.0.0.1
+    addr: audio_ip_address
     affinity: ''
     alias: ''
     comment: ''
@@ -298,7 +412,27 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 492.0]
+    coordinate: [912, 460.0]
+    rotation: 0
+    state: enabled
+- name: network_udp_sink_0_0
+  id: network_udp_sink
+  parameters:
+    addr: audio_ip_address
+    affinity: ''
+    alias: ''
+    comment: ''
+    header: '0'
+    payloadsize: '1472'
+    port: audio_speech_port
+    send_eof: 'False'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 596.0]
     rotation: 0
     state: enabled
 - name: note_0
@@ -324,7 +458,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [72, 644.0]
+    coordinate: [56, 620.0]
     rotation: 0
     state: true
 - name: qtgui_waterfall_sink_x_0
@@ -385,7 +519,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 580.0]
+    coordinate: [616, 548.0]
     rotation: 0
     state: disabled
 - name: qtgui_waterfall_sink_x_1
@@ -446,9 +580,49 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 484.0]
+    coordinate: [616, 452.0]
     rotation: 0
     state: disabled
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '25'
+    fbw: '0'
+    interp: '16'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 780.0]
+    rotation: 0
+    state: enabled
+- name: rational_resampler_xxx_0_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '25'
+    fbw: '0'
+    interp: '16'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 628.0]
+    rotation: 0
+    state: enabled
 - name: sdrplay3_rspdxr2_0
   id: sdrplay3_rspdxr2
   parameters:
@@ -466,7 +640,7 @@ blocks:
     debug_mode: 'False'
     freq_corr: '0'
     hdr_mode: 'False'
-    if_gRdB: '30'
+    if_gRdB: '36'
     iq_balance_mode: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -486,7 +660,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [80, 132.0]
+    coordinate: [80, 172.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_0
@@ -499,7 +673,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 292.0]
+    coordinate: [616, 260.0]
     rotation: 0
     state: enabled
 - name: virtual_source_0
@@ -552,25 +726,31 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [40, 556.0]
+    coordinate: [56, 548.0]
     rotation: 0
     state: enabled
 
 connections:
 - [blocks_complex_to_real_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_complex_to_real_0_0, '0', blocks_multiply_const_vxx_0_0, '0']
 - [blocks_correctiq_0, '0', blocks_file_sink_0, '0']
 - [blocks_correctiq_0, '0', logpwrfft_x_0, '0']
 - [blocks_correctiq_0, '0', qtgui_waterfall_sink_x_1, '0']
 - [blocks_correctiq_0, '0', virtual_sink_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_multiply_const_vxx_0, '0', network_udp_sink_0, '0']
+- [blocks_multiply_const_vxx_0_0, '0', network_udp_sink_0_0, '0']
 - [blocks_throttle_0, '0', logpwrfft_x_0, '0']
 - [blocks_throttle_0, '0', virtual_sink_0, '0']
-- [freq_xlating_fir_filter_xxx_0, '0', blocks_complex_to_real_0, '0']
 - [freq_xlating_fir_filter_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
+- [freq_xlating_fir_filter_xxx_0, '0', rational_resampler_xxx_0_0, '0']
 - [logpwrfft_x_0, '0', zeromq_pub_sink_0, '0']
+- [low_pass_filter_0, '0', rational_resampler_xxx_0, '0']
+- [rational_resampler_xxx_0, '0', blocks_complex_to_real_0_0, '0']
+- [rational_resampler_xxx_0_0, '0', blocks_complex_to_real_0, '0']
 - [sdrplay3_rspdxr2_0, '0', blocks_correctiq_0, '0']
 - [virtual_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
+- [virtual_source_0, '0', low_pass_filter_0, '0']
 - [zeromq_pull_msg_source_0, out, freq_xlating_fir_filter_xxx_0, freq]
 
 metadata:
