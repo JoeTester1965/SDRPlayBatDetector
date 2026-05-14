@@ -123,7 +123,7 @@ while True:
         if bin_count >= bin_count_threshold:
             if  (time.time() - last_trigger_time[index]) > retrigger_seconds:
                 last_trigger_time[index] = time.time()
-                 now = datetime.datetime.now()
+                now = datetime.datetime.now()
                 csv_entry="%s,%s,%0.0f,%d,%0.0f,%d,%d\n" % (now.strftime("%Y-%m-%d %H:%M:%S"),time.time(),
                                                             start_event_frequency, start_event_power, end_event_frequency, end_event_power, bin_count)
                 csv_file.write(csv_entry)
